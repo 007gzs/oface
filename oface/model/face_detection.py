@@ -234,7 +234,7 @@ class SCRFD(FaceDetector):
             bindex = np.argsort(
                 values)[::-1]  # some extra weight on the centering
             bindex = bindex[0:max_num]
-            bboxes = bboxes[bindex, :]
+            det = det[bindex, :]
             if kpss is not None:
                 kpss = kpss[bindex, :]
         return det, kpss

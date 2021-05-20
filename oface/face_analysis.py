@@ -34,16 +34,16 @@ class Face:
 
 
 class FaceAnalysis:
-    def __init__(self, *, model_path, det_model_name='scrfd_10g_bnkps', rec_model_name='glintr100'):
+    def __init__(self, *, model_path, name="antelope", det_model_name='scrfd_10g_bnkps', rec_model_name='glintr100'):
         """
         :param model_path: 模型路径
         :param det_model_name: 人脸检测模型名称
         :param rec_model_name: 人脸识别模型名称
 
         """
-        self.det_model = SCRFD(os.path.join(model_path, "antelope", "%s.onnx" % det_model_name))
+        self.det_model = SCRFD(os.path.join(model_path, name, "%s.onnx" % det_model_name))
         if rec_model_name is not None:
-            self.rec_model = ArcFace(os.path.join(model_path, "antelope", "%s.onnx" % rec_model_name))
+            self.rec_model = ArcFace(os.path.join(model_path, name, "%s.onnx" % rec_model_name))
         else:
             self.rec_model = None
         self.registered_faces = list()

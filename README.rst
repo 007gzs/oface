@@ -23,6 +23,12 @@ OFace
 
     pip install https://github.com/007gzs/oface/archive/master.zip
 
+
+预训练模型下载地址
+=================
+
+`百度云下载 <https://pan.baidu.com/s/1Lp3H3oz8O6w1wC9S7CSL-w>`_ 提取码：face
+
 快速使用
 ==========
 

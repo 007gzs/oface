@@ -29,6 +29,8 @@ OFace
 
 `百度云下载 <https://pan.baidu.com/s/1Lp3H3oz8O6w1wC9S7CSL-w>`_ 提取码：face
 
+`DropBox下载 <https://www.dropbox.com/sh/yhlrgfgolphqqt5/AADBiAFlVL8TYne-4L6_udCha>`_ 
+
 快速使用
 ==========
 

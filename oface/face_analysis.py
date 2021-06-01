@@ -34,7 +34,14 @@ class Face:
 
 
 class FaceAnalysis:
-    def __init__(self, *, model_path, name="antelope", det_model_name='scrfd_10g_bnkps', rec_model_name='glintr100'):
+    def __init__(
+            self,
+            *,
+            model_path,
+            name="antelope",
+            det_model_name='scrfd_10g_bnkps',
+            rec_model_name='glint360k_cosface_r100_fp16_0.1'
+    ):
         """
         :param model_path: 模型路径
         :param det_model_name: 人脸检测模型名称
@@ -116,18 +123,9 @@ class FaceAnalysis:
             sim_face_ids = None
             extend = dict()
             if get_feature and self.rec_model is not None:
-                assert landmark is not None
-                cropped_image = face_align.norm_crop(image, landmark=landmark)
-                feat = self.rec_model.get(cropped_image)
-                embedding = feat.flatten()
-                embedding_norm = np.linalg.norm(embedding)
-                normed_embedding = embedding / embedding_norm
-                extend['feat'] = feat
-                extend['embedding'] = embedding
-                extend['embedding_norm'] = embedding_norm
-                extend['normed_embedding'] = normed_embedding
-                feature = normed_embedding
-                sim_face_ids = self.check_face(feature, min_sim=min_sim, max_count=match_num)
+                cropped_image = self.get_cropped_image(image, landmark)
+                feature = self.get_feature(cropped_image)
+                sim_face_ids, extend = self.get_sim_faces(feature, min_sim, match_num)
             ret.append(Face(
                 bbox=(bbox / img_scaled).astype(np.int).tolist(),
                 det_score=float(det_score),
@@ -137,3 +135,43 @@ class FaceAnalysis:
                 extend=extend
             ))
         return ret
+
+    def get_cropped_image(self, image, landmark):
+        """
+        获取五官对齐后图片
+
+        :param image: 图片
+        :param landmark: 五官特征点
+        """
+        assert landmark is not None
+        return face_align.norm_crop(image, landmark=landmark)
+
+    def get_feature(self, cropped_image):
+        """
+        通过五官对其后图片获取图片特征值
+
+        :param cropped_image: 五官对齐后图片
+        """
+        assert self.rec_model is not None
+        extend = dict()
+        feat = self.rec_model.get(cropped_image)
+        embedding = feat.flatten()
+        embedding_norm = np.linalg.norm(embedding)
+        normed_embedding = embedding / embedding_norm
+        extend['feat'] = feat
+        extend['cropped_image'] = cropped_image
+        extend['embedding'] = embedding
+        extend['embedding_norm'] = embedding_norm
+        extend['normed_embedding'] = normed_embedding
+        feature = normed_embedding
+        return feature, extend
+
+    def get_sim_faces(self, feature, min_sim, match_num):
+        """
+        通过特征值获取相似人脸
+
+        :param feature: 特征值
+        :param min_sim: 人脸识别相似度下限
+        :param match_num: 人脸识别匹配返回数量
+        """
+        return self.check_face(feature, min_sim=min_sim, max_count=match_num)

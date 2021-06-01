@@ -124,8 +124,8 @@ class FaceAnalysis:
             extend = dict()
             if get_feature and self.rec_model is not None:
                 cropped_image = self.get_cropped_image(image, landmark)
-                feature = self.get_feature(cropped_image)
-                sim_face_ids, extend = self.get_sim_faces(feature, min_sim, match_num)
+                feature, extend = self.get_feature(cropped_image)
+                sim_face_ids = self.get_sim_faces(feature, min_sim, match_num)
             ret.append(Face(
                 bbox=(bbox / img_scaled).astype(np.int).tolist(),
                 det_score=float(det_score),

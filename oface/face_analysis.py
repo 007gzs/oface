@@ -85,7 +85,8 @@ class FaceAnalysis:
             dec_threshold=0.5,
             get_feature=True,
             min_sim=0.6,
-            match_num=1
+            match_num=1,
+            input_size=(640, 640)
     ):
         """
 
@@ -96,8 +97,11 @@ class FaceAnalysis:
         :param get_feature: 是否返回人脸识别相关参数
         :param min_sim: 人脸识别相似度下限
         :param match_num: 人脸识别匹配返回数量
+        :param input_size: 检测时人脸大小
         """
-        dets, landmarks = self.det_model.detect(image, threshold=dec_threshold, max_num=max_num, metric='default')
+        dets, landmarks = self.det_model.detect(
+            image, threshold=dec_threshold, max_num=max_num, metric='default', input_size=input_size
+        )
         ret = list()
         if dets.shape[0] == 0:
             return ret
